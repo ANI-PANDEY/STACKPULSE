@@ -15,7 +15,7 @@ const DEALERS = [
 ];
 
 export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
-  const [dealersList, setDealersList] = useState(DEALERS);
+  const [dealersList] = useState(DEALERS);
   const [searchTerm, setSearchTerm] = useState('');
   const isDark = theme === 'dark';
 
@@ -39,21 +39,21 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
 
   return (
     <div className={`p-4 sm:p-6 rounded-2xl border space-y-6 transition-colors ${
-      isDark ? 'bg-[#0B0F17] border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
+      isDark ? 'bg-[#07070D] border-white/10 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
     }`}>
       
       {/* Header Bar */}
       <div className={`flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b gap-4 ${
-        isDark ? 'border-slate-800' : 'border-slate-200'
+        isDark ? 'border-white/10' : 'border-slate-200'
       }`}>
         <div>
           <div className="flex items-center gap-2">
             <h3 className={`text-xl font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <BookOpen className="w-5 h-5 text-emerald-500" />
+              <BookOpen className="w-5 h-5 text-[#FF007F]" />
               B2B Wholesaler Credit Ledger (Khata Book)
             </h3>
-            <span className="bg-emerald-500/20 text-emerald-500 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-500/30">
-              WHATSAPP REMINDERS ACTIVE
+            <span className="bg-[#FFE600]/10 text-[#FFE600] text-xs px-2.5 py-0.5 rounded-full font-black border border-[#FFE600]/30 shadow-[0_0_8px_rgba(255,230,0,0.2)]">
+              ⚡ WHATSAPP REMINDERS ACTIVE
             </span>
           </div>
           <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -69,8 +69,8 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
               placeholder="Search dealer or city..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full border rounded-xl pl-9 pr-3 py-1.5 text-xs focus:outline-none focus:border-emerald-500 ${
-                isDark ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
+              className={`w-full border rounded-xl pl-9 pr-3 py-1.5 text-xs focus:outline-none focus:border-[#FF007F] ${
+                isDark ? 'bg-[#0B0B14] border-white/10 text-white placeholder-slate-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
               }`}
             />
           </div>
@@ -79,29 +79,29 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
 
       {/* Credit Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0B0B14] border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Total Dealer Outstanding Balance</div>
-          <div className="text-2xl font-black text-amber-500 font-mono-nums mt-1">₹9,55,000</div>
+          <div className="text-2xl font-black text-[#FFE600] font-mono-nums mt-1">₹9,55,000</div>
           <div className={`text-[11px] mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Across 4 Active B2B Accounts</div>
         </div>
 
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0B0B14] border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Overdue Reminders Triggered Today</div>
-          <div className="text-2xl font-black text-emerald-500 font-mono-nums mt-1">100% Sent</div>
-          <div className="text-[11px] text-emerald-500 mt-1">Via WhatsApp Cloud API</div>
+          <div className="text-2xl font-black text-[#FF007F] font-mono-nums mt-1">100% Sent</div>
+          <div className="text-[11px] text-[#FFE600] mt-1 font-semibold">⚡ Via WhatsApp Cloud API</div>
         </div>
 
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#0B0B14] border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Avg. Collection Cycle</div>
           <div className={`text-2xl font-black font-mono-nums mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>9 Days</div>
-          <div className="text-[11px] text-emerald-500 mt-1">⚡ 60% faster than manual pen-paper</div>
+          <div className="text-[11px] text-[#FFE600] mt-1 font-semibold">⚡ 60% faster than manual pen-paper</div>
         </div>
       </div>
 
       {/* Dealer Accounts Table */}
-      <div className={`overflow-x-auto rounded-xl border ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-white'}`}>
-        <table className="w-full text-left text-xs">
-          <thead className={`uppercase text-[10px] ${isDark ? 'bg-slate-950 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
+      <div className={`overflow-x-auto rounded-xl border ${isDark ? 'border-white/10 bg-[#080812]' : 'border-slate-200 bg-white'}`}>
+        <table className="min-w-[640px] sm:min-w-full w-full text-left text-xs">
+          <thead className={`uppercase text-[10px] ${isDark ? 'bg-[#040408] text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
             <tr>
               <th className="p-3">Dealer / Business Name</th>
               <th className="p-3">City</th>
@@ -111,9 +111,9 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
               <th className="p-3 text-right">Action</th>
             </tr>
           </thead>
-          <tbody className={`divide-y ${isDark ? 'divide-slate-800 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
+          <tbody className={`divide-y ${isDark ? 'divide-white/5 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
             {filteredDealers.map(dealer => (
-              <tr key={dealer.id} className={isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'}>
+              <tr key={dealer.id} className={isDark ? 'hover:bg-[#0D0D1A]' : 'hover:bg-slate-50'}>
                 <td className="p-3">
                   <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{dealer.name}</div>
                   <div className={`text-[10px] font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Ph: +91 {dealer.phone}</div>
@@ -125,11 +125,11 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
                 </td>
                 <td className="p-3">
                   {dealer.status === 'OVERDUE' ? (
-                    <span className="inline-flex items-center gap-1 bg-rose-500/20 text-rose-500 px-2.5 py-1 rounded-full text-[10px] font-bold border border-rose-500/30">
-                      <AlertCircle className="w-3 h-3" /> OVERDUE ({dealer.daysOverdue} days)
+                    <span className="inline-flex items-center gap-1 bg-[#FF007F]/20 text-[#FF007F] px-2.5 py-1 rounded-full text-[10px] font-black border border-[#FF007F]/40 shadow-[0_0_8px_rgba(255,0,127,0.3)]">
+                      <AlertCircle className="w-3 h-3 text-[#FFE600]" /> OVERDUE ({dealer.daysOverdue} days)
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-500 px-2.5 py-1 rounded-full text-[10px] font-bold border border-emerald-500/30">
+                    <span className="inline-flex items-center gap-1 bg-[#FFE600]/15 text-[#FFE600] px-2.5 py-1 rounded-full text-[10px] font-bold border border-[#FFE600]/30">
                       <CheckCircle2 className="w-3 h-3" /> UP TO DATE
                     </span>
                   )}
@@ -137,9 +137,9 @@ export default function CreditLedgerView({ theme, onOpenWhatsAppModal }) {
                 <td className="p-3 text-right">
                   <button
                     onClick={() => handleSendReminder(dealer)}
-                    className="px-3 py-1.5 rounded-lg font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg font-black text-xs bg-gradient-to-r from-[#FF007F] to-[#FF1493] hover:from-[#FF1493] hover:to-[#FF007F] text-white shadow-md shadow-[#FF007F]/30 transition-all inline-flex items-center gap-1.5 cursor-pointer active:scale-95"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
+                    <MessageSquare className="w-3.5 h-3.5 text-[#FFE600] fill-current" />
                     <span>Send WhatsApp Reminder</span>
                   </button>
                 </td>

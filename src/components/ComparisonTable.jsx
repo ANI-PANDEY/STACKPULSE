@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, X, ShieldCheck } from 'lucide-react';
+import { Check, X, Zap } from 'lucide-react';
 
 const COMPARISON_ROWS = [
   { feature: 'Sub-Second Barcode POS Billing', stackpulse: true, legacy: 'Slow / Manual', paper: false },
@@ -17,74 +17,79 @@ export default function ComparisonTable({ theme }) {
   const isDark = theme === 'dark';
 
   return (
-    <section id="comparison" className={`py-24 scroll-mt-28 relative border-t transition-colors duration-300 ${
-      isDark ? 'bg-[#030712] border-slate-800/80' : 'bg-slate-50 border-slate-200'
+    <section id="comparison" className={`py-14 sm:py-24 scroll-mt-28 relative border-t transition-colors duration-300 ${
+      isDark ? 'bg-[#090A0F] border-white/10' : 'bg-slate-50 border-slate-200'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-bold mb-3 shadow-sm">
-            <ShieldCheck className="w-4 h-4" />
-            <span>THE SMART CHOICE FOR INDIAN B2B</span>
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-3 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <Zap className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <span className="text-emerald-400 font-extrabold">THE SMART CHOICE FOR INDIAN B2B</span>
           </div>
-          <h2 className={`text-3xl sm:text-4xl font-black tracking-tight mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            Why 2,500+ Indian Businesses Switched <br />
-            <span className="text-gradient-emerald">From Offline Desktop Software To StackPulse</span>
+          <h2 className={`text-2xl sm:text-4xl font-black tracking-tight mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Why 10+ Early-Adopting Businesses Switched <br className="hidden sm:inline" />
+            <span className="text-gradient-cyber">From Offline Desktop Software To StackPulse</span>
           </h2>
-          <p className={`text-sm sm:text-base ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`text-xs sm:text-base ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Compare StackPulse Cloud SaaS against legacy desktop tools and manual paper registers.
           </p>
+
+          {/* Mobile Swipe Guidance Indicator */}
+          <div className="sm:hidden mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-bold text-emerald-400">
+            <span>← Swipe horizontally to view full matrix →</span>
+          </div>
         </div>
 
-        {/* Comparison Matrix Table */}
-        <div className={`overflow-x-auto rounded-3xl border shadow-2xl ${
-          isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white border-slate-200'
+        {/* Comparison Matrix Table in Obsidian, Emerald & Rose */}
+        <div className={`overflow-x-auto rounded-2xl sm:rounded-3xl border shadow-2xl ${
+          isDark ? 'bg-[#0C0E17] border-white/10' : 'bg-white border-slate-200'
         }`}>
-          <table className="w-full text-left text-xs sm:text-sm">
+          <table className="min-w-[640px] sm:min-w-full w-full text-left text-xs sm:text-sm">
             <thead className={`uppercase text-[10px] sm:text-xs ${
-              isDark ? 'bg-slate-950 text-slate-400' : 'bg-slate-100 text-slate-600'
+              isDark ? 'bg-[#070913] text-slate-400' : 'bg-slate-100 text-slate-600'
             }`}>
               <tr>
-                <th className="p-4 sm:p-6 w-2/5">Capabilities & Features</th>
-                <th className="p-4 sm:p-6 w-1/5 text-center bg-emerald-500/10 border-x border-emerald-500/30 text-emerald-500 font-extrabold text-sm sm:text-base">
+                <th className="p-3.5 sm:p-6 w-2/5">Capabilities & Features</th>
+                <th className="p-3.5 sm:p-6 w-1/5 text-center bg-emerald-500/15 border-x border-emerald-500/30 text-emerald-400 font-black text-xs sm:text-base shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                   ⚡ STACKPULSE (Cloud SaaS)
                 </th>
-                <th className="p-4 sm:p-6 w-1/5 text-center text-slate-400">Legacy Desktop Software</th>
-                <th className="p-4 sm:p-6 w-1/5 text-center text-slate-400">Manual Paper Khata</th>
+                <th className="p-3.5 sm:p-6 w-1/5 text-center text-slate-400">Legacy Desktop Software</th>
+                <th className="p-3.5 sm:p-6 w-1/5 text-center text-slate-400">Manual Paper Khata</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDark ? 'divide-slate-800 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
+            <tbody className={`divide-y ${isDark ? 'divide-white/5 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
               {COMPARISON_ROWS.map((row, idx) => (
-                <tr key={idx} className={isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'}>
-                  <td className={`p-4 sm:p-5 font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <tr key={idx} className={isDark ? 'hover:bg-[#111524]' : 'hover:bg-slate-50'}>
+                  <td className={`p-3.5 sm:p-5 font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                    {row.feature}
+                    <span className="leading-snug">{row.feature}</span>
                   </td>
                   
-                  {/* StackPulse Column */}
-                  <td className="p-4 sm:p-5 text-center bg-emerald-500/5 border-x border-emerald-500/20 font-bold text-emerald-500">
+                  {/* StackPulse Column in Emerald Green */}
+                  <td className="p-3.5 sm:p-5 text-center bg-emerald-500/5 border-x border-emerald-500/20 font-bold text-emerald-400">
                     <div className="flex items-center justify-center gap-1">
-                      <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto border border-emerald-500/40">
-                        <Check className="w-4 h-4" />
+                      <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]">
+                        <Check className="w-4 h-4 text-emerald-300" />
                       </span>
                     </div>
                   </td>
 
                   {/* Legacy Software Column */}
-                  <td className="p-4 sm:p-5 text-center font-medium text-slate-400">
+                  <td className="p-3.5 sm:p-5 text-center font-medium text-slate-400">
                     {typeof row.legacy === 'boolean' ? (
-                      row.legacy ? <Check className="w-4 h-4 text-slate-400 mx-auto" /> : <X className="w-4 h-4 text-rose-500/80 mx-auto" />
+                      row.legacy ? <Check className="w-4 h-4 text-slate-400 mx-auto" /> : <X className="w-4 h-4 text-red-500 mx-auto" />
                     ) : (
-                      <span className="text-xs text-amber-500 font-mono font-bold">{row.legacy}</span>
+                      <span className="text-[11px] sm:text-xs text-red-400 font-mono font-bold">{row.legacy}</span>
                     )}
                   </td>
 
                   {/* Paper Khata Column */}
-                  <td className="p-4 sm:p-5 text-center text-slate-400">
+                  <td className="p-3.5 sm:p-5 text-center text-slate-400">
                     {typeof row.paper === 'boolean' ? (
-                      row.paper ? <Check className="w-4 h-4 text-slate-400 mx-auto" /> : <X className="w-4 h-4 text-rose-500/80 mx-auto" />
+                      row.paper ? <Check className="w-4 h-4 text-slate-400 mx-auto" /> : <X className="w-4 h-4 text-red-500 mx-auto" />
                     ) : (
-                      <span className="text-xs text-rose-500 font-mono font-bold">{row.paper}</span>
+                      <span className="text-[11px] sm:text-xs text-red-400 font-mono font-bold">{row.paper}</span>
                     )}
                   </td>
                 </tr>

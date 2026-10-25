@@ -7,12 +7,11 @@ import {
   Calendar, 
   CheckCircle2,
   ShieldCheck,
-  Users,
-  MessageSquare
+  Users
 } from 'lucide-react';
 
 export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal }) {
-  const [selectedMonth, setSelectedMonth] = useState('August 2026');
+  const [selectedMonth] = useState('August 2026');
   const [downloadSuccess, setDownloadSuccess] = useState('');
   const isDark = theme === 'dark';
 
@@ -48,20 +47,20 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
 
   return (
     <div className={`p-4 sm:p-6 rounded-2xl border space-y-6 transition-colors ${
-      isDark ? 'bg-[#0B0F17] border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
+      isDark ? 'bg-[#07070D] border-white/10 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
     }`}>
       
       {/* Top Header */}
       <div className={`flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b gap-4 ${
-        isDark ? 'border-slate-800' : 'border-slate-200'
+        isDark ? 'border-white/10' : 'border-slate-200'
       }`}>
         <div>
           <div className="flex items-center gap-2">
             <h3 className={`text-xl font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <TrendingUp className="w-5 h-5 text-indigo-500" />
+              <TrendingUp className="w-5 h-5 text-[#FF007F]" />
               Executive Admin Analytics & Lead CRM
             </h3>
-            <span className="bg-indigo-500/20 text-indigo-500 text-xs px-2.5 py-0.5 rounded-full font-bold border border-indigo-500/30">
+            <span className="bg-[#FF007F]/10 text-[#FF007F] text-xs px-2.5 py-0.5 rounded-full font-black border border-[#FF007F]/30 shadow-[0_0_8px_rgba(255,0,127,0.2)]">
               MULTI-TENANT REAL-TIME
             </span>
           </div>
@@ -72,14 +71,14 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
           {/* Admin Captured Leads CRM Trigger Button */}
           <button
             onClick={onOpenLeadsModal}
-            className="px-4 py-2 rounded-xl font-extrabold text-xs bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+            className="px-4 py-2 rounded-xl font-black text-xs bg-gradient-to-r from-[#FF007F] to-[#FF1493] text-white shadow-lg shadow-[#FF007F]/30 hover:shadow-[#FF007F]/50 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
           >
-            <Users className="w-4 h-4" />
-            <span>📥 View Captured Leads CRM ({leadsCount || 3})</span>
+            <Users className="w-4 h-4 text-[#FFE600]" />
+            <span>View Captured Leads CRM ({leadsCount || 3})</span>
           </button>
 
           <div className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs ${
-            isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-white border-slate-300 text-slate-700'
+            isDark ? 'bg-[#0B0B14] border-white/10 text-slate-300' : 'bg-white border-slate-300 text-slate-700'
           }`}>
             <Calendar className="w-3.5 h-3.5 text-slate-400" />
             <span className="font-medium">{selectedMonth}</span>
@@ -88,52 +87,55 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
       </div>
 
       {downloadSuccess && (
-        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-500 text-xs font-semibold px-4 py-3 rounded-xl flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        <div className="bg-[#FFE600]/15 border border-[#FFE600]/40 text-[#FFE600] text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-[#FFE600]/20">
+          <CheckCircle2 className="w-4 h-4 text-[#FFE600]" />
           <span>{downloadSuccess}</span>
         </div>
       )}
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border transition-all ${isDark ? 'bg-[#0B0B14] border-white/5 hover:border-[#FF007F]/40' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Monthly Gross Revenue</div>
           <div className={`text-2xl font-black font-mono-nums ${isDark ? 'text-white' : 'text-slate-900'}`}>₹54,20,000</div>
-          <div className="text-xs text-emerald-500 font-medium mt-1">↑ +18.4% vs last month</div>
+          <div className="text-xs text-[#FFE600] font-bold mt-1">⚡ +18.4% vs last month</div>
         </div>
 
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border transition-all ${isDark ? 'bg-[#0B0B14] border-white/5 hover:border-[#FF007F]/40' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Captured Leads & Demos</div>
-          <div className="text-2xl font-black text-emerald-500 font-mono-nums">{leadsCount || 3} Leads</div>
-          <div className="text-xs text-emerald-500 font-medium mt-1 cursor-pointer hover:underline" onClick={onOpenLeadsModal}>
-            Click to chat on WhatsApp &rarr;
+          <div className="text-2xl font-black text-[#FF007F] font-mono-nums">{leadsCount || 3} Leads</div>
+          <div className="text-xs text-[#FF007F] font-bold mt-1 cursor-pointer hover:underline flex items-center gap-1" onClick={onOpenLeadsModal}>
+            <span>Click to chat on WhatsApp</span>
+            <span className="text-[#FFE600]">&rarr;</span>
           </div>
         </div>
 
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border transition-all ${isDark ? 'bg-[#0B0B14] border-white/5 hover:border-[#FF007F]/40' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Total B2B & B2C Invoices</div>
           <div className={`text-2xl font-black font-mono-nums ${isDark ? 'text-white' : 'text-slate-900'}`}>1,482</div>
-          <div className="text-xs text-cyan-500 font-medium mt-1">0 GST Errors Detected</div>
+          <div className="text-xs text-[#FFE600] font-bold mt-1">⚡ 0 GST Errors Detected</div>
         </div>
 
-        <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+        <div className={`p-4 rounded-xl border transition-all ${isDark ? 'bg-[#0B0B14] border-white/5 hover:border-[#FFE600]/40' : 'bg-white border-slate-200 shadow-sm'}`}>
           <div className={`text-xs font-medium mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Active Wholesaler Khata</div>
-          <div className="text-2xl font-black text-amber-500 font-mono-nums">₹12,40,000</div>
-          <div className="text-xs text-amber-500 font-medium mt-1">Pending Dealer Receivables</div>
+          <div className="text-2xl font-black text-[#FFE600] font-mono-nums">₹12,40,000</div>
+          <div className="text-xs text-amber-400 font-medium mt-1">Pending Dealer Receivables</div>
         </div>
       </div>
 
       {/* Hourly Sales Visual Chart Simulation */}
-      <div className={`p-5 rounded-xl border ${isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+      <div className={`p-5 rounded-xl border ${isDark ? 'bg-[#0B0B14] border-white/5' : 'bg-white border-slate-200 shadow-sm'}`}>
         <div className="flex items-center justify-between mb-4">
           <h4 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            <BarChart2 className="w-4 h-4 text-emerald-500" />
+            <BarChart2 className="w-4 h-4 text-[#FF007F]" />
             Today's Hourly Store Sales Trend (INR)
           </h4>
-          <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Peak hour: 4:00 PM (₹38,200)</span>
+          <span className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Peak hour: 4:00 PM (<span className="text-[#FFE600] font-bold font-mono">₹38,200</span>)
+          </span>
         </div>
 
-        <div className={`h-32 flex items-end gap-2 sm:gap-4 pt-4 px-2 border-b ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+        <div className={`h-32 flex items-end gap-2 sm:gap-4 pt-4 px-2 border-b ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
           {[
             { hour: '9 AM', val: 20 },
             { hour: '11 AM', val: 45 },
@@ -145,11 +147,11 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
             { hour: '9 PM', val: 30 }
           ].map((bar, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
-              <div className="text-[10px] text-emerald-500 opacity-0 group-hover:opacity-100 font-mono transition-opacity">
+              <div className="text-[10px] text-[#FFE600] opacity-0 group-hover:opacity-100 font-mono transition-opacity">
                 {bar.val * 382}
               </div>
               <div 
-                className="w-full bg-gradient-to-t from-emerald-600 to-cyan-400 rounded-t group-hover:from-emerald-400 group-hover:to-cyan-300 transition-all shadow-md"
+                className="w-full bg-gradient-to-t from-[#FF007F] via-[#FF1493] to-[#FFE600] rounded-t group-hover:from-[#FF1493] group-hover:to-[#FFF01F] transition-all shadow-md shadow-[#FF007F]/20"
                 style={{ height: `${bar.val}%` }}
               />
               <span className={`text-[10px] font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{bar.hour}</span>
@@ -160,13 +162,13 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
 
       {/* GST Return-Ready Reports Export Section */}
       <div className={`p-5 rounded-xl border ${
-        isDark ? 'bg-gradient-to-r from-slate-900 via-[#0D1525] to-slate-900 border-indigo-500/30' : 'bg-gradient-to-r from-slate-100 via-indigo-50 to-slate-100 border-indigo-200'
+        isDark ? 'bg-[#0B0B14] border-[#FF007F]/30 shadow-[0_0_20px_rgba(255,0,127,0.15)]' : 'bg-gradient-to-r from-slate-100 via-pink-50 to-slate-100 border-pink-200'
       }`}>
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
           <div>
             <h4 className={`text-sm font-black flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <ShieldCheck className="w-5 h-5 text-emerald-500" />
+              <ShieldCheck className="w-5 h-5 text-[#FFE600]" />
               1-Click GST Return Auto-Export Hub (Government Standard Format)
             </h4>
             <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Generate 100% compliant GSTR-1 JSON and GSTR-3B CSV ready for CA / Tax Portal Upload.</p>
@@ -175,26 +177,26 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleExportReport('GSTR-1')}
-              className="px-4 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-[#FF007F] to-[#FF1493] hover:from-[#FF1493] hover:to-[#FF007F] text-white shadow-lg shadow-[#FF007F]/30 transition-all flex items-center gap-2 cursor-pointer active:scale-95"
             >
-              <FileJson className="w-4 h-4" />
+              <FileJson className="w-4 h-4 text-[#FFE600]" />
               <span>Export GSTR-1 (JSON)</span>
             </button>
 
             <button
               onClick={() => handleExportReport('GSTR-3B')}
-              className="px-4 py-2.5 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2 border border-indigo-400/30 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-[#FFE600] to-[#FFB703] hover:from-[#FFF01F] hover:to-[#FFE600] text-slate-950 shadow-lg shadow-[#FFE600]/30 transition-all flex items-center gap-2 border border-[#FFE600]/50 cursor-pointer active:scale-95"
             >
-              <FileSpreadsheet className="w-4 h-4" />
+              <FileSpreadsheet className="w-4 h-4 text-slate-950" />
               <span>Export GSTR-3B (CSV)</span>
             </button>
           </div>
         </div>
 
         {/* GST Filing Summary Preview Table */}
-        <div className={`overflow-x-auto rounded-lg border ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+        <div className={`overflow-x-auto rounded-lg border ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
           <table className="w-full text-left text-xs">
-            <thead className={`uppercase text-[10px] ${isDark ? 'bg-slate-950 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
+            <thead className={`uppercase text-[10px] ${isDark ? 'bg-[#05050A] text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
               <tr>
                 <th className="p-3">GST Table Type</th>
                 <th className="p-3">Invoice Count</th>
@@ -205,15 +207,15 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
                 <th className="p-3">Status</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDark ? 'divide-slate-800 bg-slate-900/50 text-slate-300' : 'divide-slate-200 bg-white text-slate-700'}`}>
+            <tbody className={`divide-y ${isDark ? 'divide-white/5 bg-[#080810]/70 text-slate-300' : 'divide-slate-200 bg-white text-slate-700'}`}>
               <tr>
                 <td className={`p-3 font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>4A, 4B - B2B Registered Sales</td>
                 <td className="p-3 font-mono">342</td>
                 <td className="p-3 font-mono">32,40,000</td>
-                <td className="p-3 font-mono text-emerald-500">2,91,600</td>
-                <td className="p-3 font-mono text-emerald-500">2,91,600</td>
+                <td className="p-3 font-mono text-[#FFE600]">2,91,600</td>
+                <td className="p-3 font-mono text-[#FFE600]">2,91,600</td>
                 <td className="p-3 font-mono">0</td>
-                <td className="p-3"><span className="text-[10px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">RECONCILED</span></td>
+                <td className="p-3"><span className="text-[10px] bg-[#FFE600]/15 text-[#FFE600] px-2 py-0.5 rounded border border-[#FFE600]/30 font-black">RECONCILED</span></td>
               </tr>
               <tr>
                 <td className={`p-3 font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>5A, 5B - B2C Large Interstate Sales</td>
@@ -221,17 +223,17 @@ export default function AdminAnalyticsView({ theme, leadsCount, onOpenLeadsModal
                 <td className="p-3 font-mono">13,40,000</td>
                 <td className="p-3 font-mono">0</td>
                 <td className="p-3 font-mono">0</td>
-                <td className="p-3 font-mono text-cyan-500">2,41,200</td>
-                <td className="p-3"><span className="text-[10px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">RECONCILED</span></td>
+                <td className="p-3 font-mono text-[#FF007F]">2,41,200</td>
+                <td className="p-3"><span className="text-[10px] bg-[#FFE600]/15 text-[#FFE600] px-2 py-0.5 rounded border border-[#FFE600]/30 font-black">RECONCILED</span></td>
               </tr>
               <tr>
                 <td className={`p-3 font-semibold ${isDark ? 'text-white' : 'text-slate-900'}`}>12 - HSN/SAC Summary</td>
                 <td className="p-3 font-mono">1,482</td>
                 <td className="p-3 font-mono">45,80,000</td>
-                <td className="p-3 font-mono text-emerald-500">4,12,200</td>
-                <td className="p-3 font-mono text-emerald-500">4,12,200</td>
-                <td className="p-3 font-mono text-cyan-500">2,41,200</td>
-                <td className="p-3"><span className="text-[10px] bg-indigo-500/20 text-indigo-500 px-2 py-0.5 rounded border border-indigo-500/30 font-bold">READY TO FILE</span></td>
+                <td className="p-3 font-mono text-[#FFE600]">4,12,200</td>
+                <td className="p-3 font-mono text-[#FFE600]">4,12,200</td>
+                <td className="p-3 font-mono text-[#FF007F]">2,41,200</td>
+                <td className="p-3"><span className="text-[10px] bg-[#FF007F]/20 text-[#FF007F] px-2 py-0.5 rounded border border-[#FF007F]/30 font-black">READY TO FILE</span></td>
               </tr>
             </tbody>
           </table>

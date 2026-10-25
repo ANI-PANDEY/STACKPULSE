@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import SocialProofSection from './components/SocialProofSection';
 import SandboxContainer from './components/InteractiveSandbox/SandboxContainer';
 import RoiCalculator from './components/RoiCalculator';
 import ProductFeatures from './components/ProductFeatures';
@@ -61,7 +62,7 @@ export default function App() {
   const [leads, setLeads] = useState(() => {
     const saved = localStorage.getItem('stackpulse_leads');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { return INITIAL_LEADS; }
+      try { return JSON.parse(saved); } catch { return INITIAL_LEADS; }
     }
     return INITIAL_LEADS;
   });
@@ -111,7 +112,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 relative overflow-hidden ${theme === 'dark' ? 'bg-[#030712] text-slate-100' : 'bg-slate-50 text-slate-900'
+    <div className={`min-h-screen transition-colors duration-300 relative overflow-hidden ${theme === 'dark' ? 'bg-[#090A0F] text-slate-100' : 'bg-slate-50 text-slate-900'
       }`}>
 
       {/* Animated Moving Background Pulse Wave Lines & Drifting Neon Orbs */}
@@ -123,8 +124,6 @@ export default function App() {
         onToggleTheme={toggleTheme}
         onOpenDemoModal={() => setDemoModalOpen(true)}
         onOpenTrialModal={() => setTrialModalOpen(true)}
-        onOpenLeadsModal={() => setLeadsModalOpen(true)}
-        leadsCount={leads.length}
         onScrollToSection={scrollToSection}
       />
 
@@ -136,6 +135,21 @@ export default function App() {
         onScrollToSandbox={() => scrollToSection('sandbox')}
       />
 
+      {/* Trust & Social Proof Section: 99.9% Uptime, 0.2s Speed, 100% Tax Compliant & Testimonial Carousel */}
+      <SocialProofSection theme={theme} />
+
+      {/* Dual-Mode (B2C Marts vs B2B Wholesalers) Feature Bento-Grid */}
+      <ProductFeatures
+        theme={theme}
+        onOpenDemoModal={() => setDemoModalOpen(true)}
+      />
+
+      {/* Interactive ROI & Time-Saved Calculator */}
+      <RoiCalculator
+        theme={theme}
+        onOpenTrialModal={() => setTrialModalOpen(true)}
+      />
+
       {/* Interactive Web-Portal Sandbox */}
       <SandboxContainer
         theme={theme}
@@ -143,18 +157,6 @@ export default function App() {
         onOpenTrialModal={() => setTrialModalOpen(true)}
         leadsCount={leads.length}
         onOpenLeadsModal={() => setLeadsModalOpen(true)}
-      />
-
-      {/* Interactive ROI Calculator */}
-      <RoiCalculator
-        theme={theme}
-        onOpenTrialModal={() => setTrialModalOpen(true)}
-      />
-
-      {/* Hero Product Portfolio Deep Dives */}
-      <ProductFeatures
-        theme={theme}
-        onOpenDemoModal={() => setDemoModalOpen(true)}
       />
 
       {/* Why Switch / Feature Comparison Table */}
@@ -213,7 +215,6 @@ export default function App() {
 
       {leadsModalOpen && (
         <AdminLeadsModal
-          theme={theme}
           leads={leads}
           onClose={() => setLeadsModalOpen(false)}
         />

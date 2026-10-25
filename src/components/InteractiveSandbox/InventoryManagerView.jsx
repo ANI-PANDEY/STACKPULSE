@@ -43,20 +43,20 @@ export default function InventoryManagerView({ theme }) {
 
   return (
     <div className={`p-4 sm:p-6 rounded-2xl border space-y-6 transition-colors ${
-      isDark ? 'bg-[#0B0F17] border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
+      isDark ? 'bg-[#07070D] border-white/10 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
     }`}>
       
       {/* Header Bar */}
       <div className={`flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b gap-4 ${
-        isDark ? 'border-slate-800' : 'border-slate-200'
+        isDark ? 'border-white/10' : 'border-slate-200'
       }`}>
         <div>
           <div className="flex items-center gap-2">
             <h3 className={`text-xl font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <Boxes className="w-5 h-5 text-cyan-500" />
+              <Boxes className="w-5 h-5 text-[#FFE600]" />
               PulseStock Multi-Warehouse Hub
             </h3>
-            <span className="bg-cyan-500/20 text-cyan-500 text-xs px-2.5 py-0.5 rounded-full font-bold border border-cyan-500/30">
+            <span className="bg-[#FFE600]/10 text-[#FFE600] text-xs px-2.5 py-0.5 rounded-full font-black border border-[#FFE600]/30 shadow-[0_0_8px_rgba(255,230,0,0.2)]">
               BATCH & EXPIRY TRACKED
             </span>
           </div>
@@ -71,8 +71,8 @@ export default function InventoryManagerView({ theme }) {
           <select
             value={selectedWarehouse}
             onChange={(e) => setSelectedWarehouse(e.target.value)}
-            className={`border text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-cyan-500 ${
-              isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+            className={`border text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-[#FF007F] ${
+              isDark ? 'bg-[#0B0B14] border-white/10 text-white' : 'bg-white border-slate-300 text-slate-900'
             }`}
           >
             <option value="ALL">All Warehouses (3 Hubs)</option>
@@ -84,24 +84,26 @@ export default function InventoryManagerView({ theme }) {
       </div>
 
       {reconcileMessage && (
-        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-500 text-xs font-semibold px-4 py-3 rounded-xl flex items-center gap-2 animate-pulse">
-          <Sparkles className="w-4 h-4 text-emerald-500" />
+        <div className="bg-[#FF007F]/15 border border-[#FF007F]/40 text-[#FF007F] text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-[#FF007F]/20">
+          <Sparkles className="w-4 h-4 text-[#FFE600]" />
           <span>{reconcileMessage}</span>
         </div>
       )}
 
       {/* PO Reconciliation Card Banner */}
       <div className={`p-4 rounded-xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-        isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+        isDark ? 'bg-[#0B0B14] border-white/10 hover:border-[#FF007F]/30 transition-all' : 'bg-white border-slate-200 shadow-sm'
       }`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center border border-cyan-500/30">
+          <div className="w-10 h-10 rounded-xl bg-[#FF007F]/15 text-[#FF007F] flex items-center justify-center border border-[#FF007F]/30">
             <FileText className="w-5 h-5" />
           </div>
           <div>
             <div className={`text-xs font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
               <span>Pending Purchase Order: #PO-8821 (Vendor: ITC Limited)</span>
-              <span className="text-[10px] bg-amber-500/20 text-amber-600 dark:text-amber-300 px-2 py-0.5 rounded font-bold">100 Units Atta Arrived</span>
+              <span className="text-[10px] bg-[#FFE600]/15 text-[#FFE600] px-2 py-0.5 rounded font-black border border-[#FFE600]/30">
+                ⚡ 100 Units Atta Arrived
+              </span>
             </div>
             <p className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Click reconcile to verify invoice quantity against physical stock arrival.</p>
           </div>
@@ -110,21 +112,21 @@ export default function InventoryManagerView({ theme }) {
         <button
           onClick={handleReconcilePO}
           disabled={poReconciled}
-          className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shadow-lg ${
+          className={`px-4 py-2.5 rounded-xl font-black text-xs transition-all flex items-center gap-2 shadow-lg cursor-pointer active:scale-95 ${
             poReconciled
-              ? 'bg-slate-200 dark:bg-slate-800 text-slate-500 border border-slate-300 dark:border-slate-700 cursor-not-allowed'
-              : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 shadow-cyan-500/20'
+              ? 'bg-[#121220] text-slate-500 border border-white/5 cursor-not-allowed'
+              : 'bg-gradient-to-r from-[#FFE600] via-[#FCEE0A] to-[#FFB703] hover:from-[#FFF01F] hover:to-[#FFE600] text-slate-950 shadow-[#FFE600]/30'
           }`}
         >
-          <Check className="w-4 h-4" />
+          <Check className="w-4 h-4 text-slate-950" />
           <span>{poReconciled ? 'PO Reconciled & Stock Updated' : '📦 Reconcile PO #PO-8821 to Stock'}</span>
         </button>
       </div>
 
       {/* Stock Items Table */}
-      <div className={`overflow-x-auto rounded-xl border ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-white'}`}>
-        <table className="w-full text-left text-xs">
-          <thead className={`uppercase text-[10px] ${isDark ? 'bg-slate-950 text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
+      <div className={`overflow-x-auto rounded-xl border ${isDark ? 'border-white/10 bg-[#080812]' : 'border-slate-200 bg-white'}`}>
+        <table className="min-w-[700px] sm:min-w-full w-full text-left text-xs">
+          <thead className={`uppercase text-[10px] ${isDark ? 'bg-[#040408] text-slate-400' : 'bg-slate-200 text-slate-600'}`}>
             <tr>
               <th className="p-3">Product Name & SKU</th>
               <th className="p-3">Warehouse Location</th>
@@ -135,9 +137,9 @@ export default function InventoryManagerView({ theme }) {
               <th className="p-3">Stock Status</th>
             </tr>
           </thead>
-          <tbody className={`divide-y ${isDark ? 'divide-slate-800 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
+          <tbody className={`divide-y ${isDark ? 'divide-white/5 text-slate-300' : 'divide-slate-200 text-slate-700'}`}>
             {filteredItems.map(item => (
-              <tr key={item.id} className={isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50'}>
+              <tr key={item.id} className={isDark ? 'hover:bg-[#0D0D1A]' : 'hover:bg-slate-50'}>
                 <td className="p-3">
                   <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{item.name}</div>
                   <div className={`text-[10px] font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.sku}</div>
@@ -151,18 +153,18 @@ export default function InventoryManagerView({ theme }) {
                 <td className="p-3 font-mono text-slate-400">{item.minStock} units</td>
                 <td className="p-3">
                   {item.status === 'LOW_STOCK' && (
-                    <span className="inline-flex items-center gap-1 bg-rose-500/20 text-rose-500 px-2.5 py-1 rounded-full text-[10px] font-bold border border-rose-500/30">
+                    <span className="inline-flex items-center gap-1 bg-[#FF007F]/20 text-[#FF007F] px-2.5 py-1 rounded-full text-[10px] font-black border border-[#FF007F]/40 shadow-[0_0_8px_rgba(255,0,127,0.3)]">
                       <AlertTriangle className="w-3 h-3" /> LOW STOCK ALERT
                     </span>
                   )}
                   {item.status === 'EXPIRING_SOON' && (
-                    <span className="inline-flex items-center gap-1 bg-amber-500/20 text-amber-500 px-2.5 py-1 rounded-full text-[10px] font-bold border border-amber-500/30">
+                    <span className="inline-flex items-center gap-1 bg-[#FFE600]/15 text-[#FFE600] px-2.5 py-1 rounded-full text-[10px] font-black border border-[#FFE600]/40 shadow-[0_0_8px_rgba(255,230,0,0.2)]">
                       <Clock className="w-3 h-3" /> EXPIRING SOON
                     </span>
                   )}
                   {item.status === 'NORMAL' && (
-                    <span className="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-500 px-2.5 py-1 rounded-full text-[10px] font-bold border border-emerald-500/30">
-                      <CheckCircle2 className="w-3 h-3" /> IN STOCK
+                    <span className="inline-flex items-center gap-1 bg-white/5 text-slate-200 px-2.5 py-1 rounded-full text-[10px] font-bold border border-white/10">
+                      <CheckCircle2 className="w-3 h-3 text-[#FFE600]" /> IN STOCK
                     </span>
                   )}
                 </td>
