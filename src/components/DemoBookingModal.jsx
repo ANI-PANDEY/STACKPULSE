@@ -3,30 +3,34 @@ import { X, Calendar, Clock, CheckCircle2, Play } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function DemoBookingModal({ onClose, onAddLead }) {
+  const getTomorrowDate = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  };
+
   const [formData, setFormData] = useState({
-    name: 'Aniket Pandey',
-    phone: '9876543210',
-    businessName: 'Apex Distributors',
+    name: '',
+    email: '',
+    phone: '',
+    businessName: '',
     businessType: 'Wholesaler / FMCG',
-    preferredDate: '2026-08-25',
+    preferredDate: getTomorrowDate(),
     preferredTime: '11:00 AM'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } });
-
+    try {
       if (onAddLead) {
-        onAddLead({
+        await onAddLead({
           type: 'DEMO_BOOKING',
           name: formData.name,
+          email: formData.email,
           phone: formData.phone,
           businessName: formData.businessName,
           businessType: formData.businessType,
@@ -34,7 +38,11 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
           preferredTime: formData.preferredTime
         });
       }
-    }, 1200);
+    } finally {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } });
+    }
   };
 
   return (
@@ -66,6 +74,7 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Rajesh Sharma"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-emerald-500"
@@ -76,8 +85,9 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 <div>
                   <label className="text-xs font-bold text-slate-300">WhatsApp Number</label>
                   <input
-                    type="text"
+                    type="tel"
                     required
+                    placeholder="e.g. 9820198201"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono mt-1 focus:outline-none focus:border-emerald-500"
@@ -85,15 +95,27 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300">Business Name</label>
+                  <label className="text-xs font-bold text-slate-300">Business / Store Name</label>
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Sharma FMCG Wholesalers"
                     value={formData.businessName}
                     onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                     className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-emerald-500"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-300">Email Address (Optional)</label>
+                <input
+                  type="email"
+                  placeholder="e.g. rajesh@sharmatraders.in"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-emerald-500"
+                />
               </div>
 
               <div>
@@ -107,6 +129,7 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                   <option value="Supermarket / Retail Store">Supermarket / Retail Store</option>
                   <option value="Distributor / C&F Agent">Distributor / C&F Agent</option>
                   <option value="Hardware / Electrical Dealer">Hardware / Electrical Dealer</option>
+                  <option value="Pharmacy / Healthcare Store">Pharmacy / Healthcare Store</option>
                 </select>
               </div>
 
@@ -146,7 +169,7 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 disabled={isSubmitting}
                 className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 mt-4 cursor-pointer active:scale-98"
               >
-                {isSubmitting ? 'Scheduling Demo Session...' : 'Confirm Demo Booking &rarr;'}
+                {isSubmitting ? 'Sending Request...' : 'Confirm Demo Booking →'}
               </button>
             </form>
           </div>
@@ -155,12 +178,12 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
             <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
               <CheckCircle2 className="w-8 h-8 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-black text-white">Demo Scheduled!</h3>
+            <h3 className="text-xl font-black text-white">Demo Scheduled Successfully!</h3>
             <p className="text-xs text-slate-300">
-              Session confirmed for <span className="text-emerald-400 font-bold">{formData.name}</span> on {formData.preferredDate} at {formData.preferredTime}.
+              Request received for <span className="text-emerald-400 font-bold">{formData.name}</span> on {formData.preferredDate} at {formData.preferredTime}.
             </p>
-            <p className="text-xs text-slate-400">
-              Our specialist will connect on WhatsApp (+91 {formData.phone}) with the Google Meet link.
+            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              Our product team has been instantly notified via email. We will connect with you on WhatsApp (<span className="text-slate-200 font-mono font-bold">+91 {formData.phone}</span>) with the walkthrough invite.
             </p>
             
             <button

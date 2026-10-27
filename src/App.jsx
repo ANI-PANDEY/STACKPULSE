@@ -15,6 +15,7 @@ import AdminLeadsModal from './components/AdminLeadsModal';
 import AnimatedBackgroundPulse from './components/AnimatedBackgroundPulse';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import { sendLeadNotification } from './services/leadNotificationService';
 
 const INITIAL_LEADS = [
   {
@@ -91,13 +92,20 @@ export default function App() {
     localStorage.setItem('stackpulse_leads', JSON.stringify(leads));
   }, [leads]);
 
-  const handleAddLead = (newLeadData) => {
+  const handleAddLead = async (newLeadData) => {
     const newLead = {
       id: `lead-${Date.now().toString().slice(-4)}`,
       timestamp: new Date().toISOString(),
       ...newLeadData
     };
     setLeads(prev => [newLead, ...prev]);
+
+    // Send instant email notification to aniketraj1707@gmail.com
+    try {
+      await sendLeadNotification(newLead);
+    } catch (err) {
+      console.warn('Notice while dispatching lead notification:', err);
+    }
   };
 
   const toggleTheme = () => {

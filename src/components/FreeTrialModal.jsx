@@ -3,23 +3,19 @@ import { X, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function FreeTrialModal({ onClose, onAddLead }) {
-  const [email, setEmail] = useState('aniket@stackpulse.io');
-  const [phone, setPhone] = useState('9876543210');
-  const [storeName, setStoreName] = useState('Sharma General Stores');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [storeName, setStoreName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
-
+    try {
       if (onAddLead) {
-        onAddLead({
+        await onAddLead({
           type: 'FREE_TRIAL',
           name: storeName,
           email,
@@ -27,7 +23,11 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
           businessName: storeName
         });
       }
-    }, 1200);
+    } finally {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+    }
   };
 
   return (
@@ -48,7 +48,7 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
                 <Zap className="w-5 h-5 text-emerald-400 animate-pulse" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-white">Start 14-Day Free Trial</h3>
+                <h3 className="text-lg font-black text-white">Start 14-Day Free Trial (Plug & Play)</h3>
                 <p className="text-xs text-slate-400">Full Pro Access • No Credit Card Required</p>
               </div>
             </div>
@@ -59,6 +59,7 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
                 <input
                   type="text"
                   required
+                  placeholder="e.g. Om Sai Supermarket / Wholesalers"
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                   className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-red-500"
@@ -70,6 +71,7 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
                 <input
                   type="email"
                   required
+                  placeholder="e.g. owner@business.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-red-500"
@@ -79,8 +81,9 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
               <div>
                 <label className="text-xs font-bold text-slate-300">WhatsApp Phone Number</label>
                 <input
-                  type="text"
+                  type="tel"
                   required
+                  placeholder="e.g. 9820198201"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full bg-[#0C101C] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono mt-1 focus:outline-none focus:border-red-500"
@@ -91,7 +94,7 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
                 <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" /> Instant Account Provisioning
                 </div>
-                <div>✓ Multi-Tenant Account ID: <span className="font-mono text-emerald-400 font-bold">tenant_sharma_9821</span></div>
+                <div>✓ Multi-Tenant Account ID: <span className="font-mono text-emerald-400 font-bold">tenant_{storeName ? storeName.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 12) : 'store'}_9821</span></div>
                 <div>✓ Barcode POS + WhatsApp API + GSTR Exports Included</div>
               </div>
 
@@ -111,8 +114,11 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
             </div>
             <div>
               <h3 className="text-lg font-black text-white">Trial Account Activated!</h3>
-              <p className="text-xs text-slate-400 max-w-xs mx-auto mt-1">
+              <p className="text-xs text-slate-300 max-w-xs mx-auto mt-1">
                 Your 14-day full access has been enabled for <span className="text-white font-bold">{storeName}</span>.
+              </p>
+              <p className="text-xs text-slate-400 max-w-xs mx-auto mt-2">
+                Our team has received your registration details and will send onboarding support to <span className="text-slate-200 font-semibold">{email}</span> and WhatsApp (+91 {phone}).
               </p>
             </div>
             <div className="pt-2">
@@ -120,7 +126,7 @@ export default function FreeTrialModal({ onClose, onAddLead }) {
                 onClick={onClose}
                 className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer"
               >
-                Go to Dashboard
+                Done & Return
               </button>
             </div>
           </div>

@@ -4,8 +4,8 @@ import confetti from 'canvas-confetti';
 
 export default function PaymentModal({ plan, onClose, onAddLead }) {
   const [paymentMethod, setPaymentMethod] = useState('UPI');
-  const [phone, setPhone] = useState('9876543210');
-  const [gstin, setGstin] = useState('27AABCU9603R1ZM');
+  const [phone, setPhone] = useState('');
+  const [gstin, setGstin] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -13,31 +13,30 @@ export default function PaymentModal({ plan, onClose, onAddLead }) {
 
   const priceAmount = plan.finalPrice || plan.price || 3599;
 
-  const handleSimulatePayment = (e) => {
+  const handleSimulatePayment = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      setIsSuccess(true);
-      
-      confetti({
-        particleCount: 120,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-
+    try {
       if (onAddLead) {
-        onAddLead({
+        await onAddLead({
           type: 'PAID_SUBSCRIPTION',
-          name: `Subscriber (+91 ${phone})`,
+          name: phone ? `Subscriber (+91 ${phone})` : 'New Subscriber',
           phone,
           plan: `${plan.name} (Annual Subscription)`,
           price: Math.round(priceAmount * 1.18),
           businessName: gstin ? `GST: ${gstin}` : 'Subscribed Store'
         });
       }
-    }, 2000);
+    } finally {
+      setIsProcessing(false);
+      setIsSuccess(true);
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
   };
 
   return (
@@ -118,8 +117,9 @@ export default function PaymentModal({ plan, onClose, onAddLead }) {
               <div>
                 <label className="text-xs font-bold text-slate-300">WhatsApp Phone Number for Receipt</label>
                 <input
-                  type="text"
+                  type="tel"
                   required
+                  placeholder="e.g. 9820198201"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 font-mono focus:outline-none focus:border-[#FF007F]"
@@ -130,6 +130,7 @@ export default function PaymentModal({ plan, onClose, onAddLead }) {
                 <label className="text-xs font-bold text-slate-300">GSTIN for Tax Invoice Input (Optional)</label>
                 <input
                   type="text"
+                  placeholder="e.g. 27AABCU9603R1ZM"
                   value={gstin}
                   onChange={(e) => setGstin(e.target.value)}
                   className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 font-mono uppercase focus:outline-none focus:border-[#FF007F]"
