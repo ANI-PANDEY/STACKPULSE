@@ -15,24 +15,22 @@ export default function HeroSection({ theme, onOpenDemoModal, onOpenTrialModal, 
   const isDark = theme === 'dark';
 
   return (
-    <section className={`relative pt-24 pb-14 sm:pt-32 sm:pb-20 md:pt-40 md:pb-24 overflow-hidden transition-colors duration-300 ${
-      isDark ? 'bg-[#090A0F]' : 'bg-slate-50'
-    }`}>
+    <section className={`relative pt-24 pb-14 sm:pt-32 sm:pb-20 md:pt-40 md:pb-24 overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#090A0F]' : 'bg-slate-50'
+      }`}>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
 
         {/* Dynamic Floating Trust Badge with Emerald Glow & Ping */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex justify-center mb-5 sm:mb-6"
         >
-          <div className={`inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold shadow-lg transition-all border backdrop-blur-xl max-w-full overflow-hidden ${
-            isDark
+          <div className={`inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold shadow-lg transition-all border backdrop-blur-xl max-w-full overflow-hidden ${isDark
               ? 'bg-[#0F121A]/90 border-emerald-500/30 text-slate-200 hover:border-pink-500/50 shadow-[0_0_25px_rgba(16,185,129,0.2)]'
               : 'bg-white border-slate-200 text-slate-800 hover:border-emerald-500/50 shadow-slate-200'
-          }`}>
+            }`}>
             <span className="relative flex h-2 sm:h-2.5 w-2 sm:w-2.5 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 sm:h-2.5 w-2 sm:w-2.5 bg-emerald-500"></span>
@@ -54,13 +52,12 @@ export default function HeroSection({ theme, onOpenDemoModal, onOpenTrialModal, 
 
         {/* High-Impact Headline & Pain Point Sub-Headline */}
         <div className="text-center max-w-4xl mx-auto">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.12] mb-4 sm:mb-6 ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}
+            className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.12] mb-4 sm:mb-6 ${isDark ? 'text-white' : 'text-slate-900'
+              }`}
           >
             The All-in-One Operating System for <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-pink-500 bg-clip-text text-transparent">
@@ -68,19 +65,18 @@ export default function HeroSection({ theme, onOpenDemoModal, onOpenTrialModal, 
             </span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed mb-8 sm:mb-10 max-w-3xl mx-auto px-2 ${
-              isDark ? 'text-slate-300' : 'text-slate-600'
-            }`}
+            className={`text-sm sm:text-base md:text-lg font-normal leading-relaxed mb-8 sm:mb-10 max-w-3xl mx-auto px-2 ${isDark ? 'text-slate-300' : 'text-slate-600'
+              }`}
           >
             Replace slow desktop software, automate khata, sub-second barcode checkout, and instant WhatsApp billing.
           </motion.p>
 
           {/* Primary CTA with Glowing Pulse + Secondary CTA */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
@@ -101,11 +97,10 @@ export default function HeroSection({ theme, onOpenDemoModal, onOpenTrialModal, 
             {/* Secondary CTA: Interactive Live Demo (No Sign-up) */}
             <button
               onClick={onScrollToSandbox}
-              className={`w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm backdrop-blur-xl transition-all shadow-md flex items-center justify-center gap-2.5 group border cursor-pointer ${
-                isDark
+              className={`w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm backdrop-blur-xl transition-all shadow-md flex items-center justify-center gap-2.5 group border cursor-pointer ${isDark
                   ? 'text-white bg-[#0F121A]/90 hover:bg-[#161B26] border-white/10 hover:border-emerald-500/50 shadow-[0_0_20px_rgba(0,0,0,0.5)]'
                   : 'text-slate-800 bg-white hover:bg-slate-50 border-slate-300 hover:border-emerald-500/50'
-              }`}
+                }`}
             >
               <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center border border-emerald-500/40 group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
                 <Play className="w-3 h-3 fill-current ml-0.5 text-emerald-400 group-hover:text-white" />
@@ -122,11 +117,10 @@ export default function HeroSection({ theme, onOpenDemoModal, onOpenTrialModal, 
               { icon: MessageSquare, text: "Instant WhatsApp Billing", iconColor: "text-emerald-400" },
               { icon: Lock, text: "Multi-Tenant Data Encryption", iconColor: "text-pink-400" }
             ].map((pill, idx) => (
-              <div key={idx} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-lg border transition-colors ${
-                isDark 
-                  ? 'bg-[#0F121A]/80 border-white/10 text-slate-300 hover:border-emerald-500/40 shadow-sm' 
+              <div key={idx} className={`flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-lg border transition-colors ${isDark
+                  ? 'bg-[#0F121A]/80 border-white/10 text-slate-300 hover:border-emerald-500/40 shadow-sm'
                   : 'bg-white border-slate-200 text-slate-700 shadow-sm'
-              }`}>
+                }`}>
                 <pill.icon className={`w-3.5 h-3.5 ${pill.iconColor} shrink-0`} />
                 <span>{pill.text}</span>
               </div>
