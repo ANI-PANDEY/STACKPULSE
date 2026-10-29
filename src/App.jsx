@@ -25,33 +25,43 @@ const INITIAL_LEADS = [
     phone: '9820198201',
     email: 'rajesh@sharmatraders.in',
     businessName: 'Sharma General & Wholesale Stores',
+    city: 'Patna, Bihar',
     businessType: 'Wholesaler / FMCG',
-    preferredDate: '2026-08-25',
-    preferredTime: '11:00 AM IST',
-    status: 'NEW_BOOKING',
-    timestamp: '2026-08-23T07:15:00Z'
+    counters: '2-4 Billing Counters',
+    currentSoftware: 'Excel Spreadsheets',
+    preferredDate: '2026-10-31',
+    preferredTime: '11:00 AM',
+    notes: 'Need thermal printer and WhatsApp invoice integration for 3 counters.',
+    emailStatus: 'SENT',
+    timestamp: '2026-10-29T10:15:00Z'
   },
   {
     id: 'lead-102',
     type: 'FREE_TRIAL',
-    name: 'Apex Supermarket BKC',
+    name: 'Sunil Verma',
     phone: '9876543210',
-    email: 'aniket@stackpulse.io',
-    businessName: 'Apex Supermarket BKC',
+    email: 'sunil@apexsupermarket.com',
+    businessName: 'Apex Supermarket',
+    city: 'Mumbai, MH',
     businessType: 'Supermarket / Retail Store',
-    status: 'TRIAL_ACTIVE',
-    timestamp: '2026-08-23T06:40:00Z'
+    counters: '2-3 Counters (100-500 bills/day)',
+    accountId: 'tenant_apex_supermarket_102',
+    notes: 'Testing barcode billing scanner and GST auto-filing.',
+    emailStatus: 'SENT',
+    timestamp: '2026-10-29T08:40:00Z'
   },
   {
     id: 'lead-103',
     type: 'PAID_SUBSCRIPTION',
-    name: 'Gupta FMCG Distributors',
+    name: 'Vikram Gupta',
     phone: '9820498204',
     email: 'gupta@fmcgdist.com',
     businessName: 'Gupta FMCG Distributors',
-    plan: 'Growth (₹1,599/mo)',
-    status: 'PAYMENT_ACTIVE',
-    timestamp: '2026-08-23T05:10:00Z'
+    city: 'Ranchi, JH',
+    plan: 'Growth Pro Plan (Annual)',
+    notes: 'Annual Pro with multi-counter license.',
+    emailStatus: 'SENT',
+    timestamp: '2026-10-28T14:10:00Z'
   }
 ];
 
@@ -96,15 +106,39 @@ export default function App() {
     const newLead = {
       id: `lead-${Date.now().toString().slice(-4)}`,
       timestamp: new Date().toISOString(),
+      emailStatus: 'SENDING',
       ...newLeadData
     };
     setLeads(prev => [newLead, ...prev]);
 
     // Send instant email notification to aniketraj1707@gmail.com
     try {
-      await sendLeadNotification(newLead);
+      const res = await sendLeadNotification(newLead);
+      if (res && res.success) {
+        setLeads(prev => prev.map(l => l.id === newLead.id ? { ...l, emailStatus: 'SENT', channel: res.channel } : l));
+      } else {
+        setLeads(prev => prev.map(l => l.id === newLead.id ? { ...l, emailStatus: 'FAILED', error: res?.error || 'Provider offline' } : l));
+      }
+      return res;
     } catch (err) {
       console.warn('Notice while dispatching lead notification:', err);
+      setLeads(prev => prev.map(l => l.id === newLead.id ? { ...l, emailStatus: 'FAILED', error: err.message } : l));
+      return { success: false, error: err.message };
+    }
+  };
+
+  const handleResendLead = async (lead) => {
+    try {
+      const res = await sendLeadNotification(lead);
+      if (res && res.success) {
+        setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, emailStatus: 'SENT', channel: res.channel } : l));
+      } else {
+        setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, emailStatus: 'FAILED', error: res?.error } : l));
+      }
+      return res;
+    } catch (err) {
+      setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, emailStatus: 'FAILED', error: err.message } : l));
+      return { success: false, error: err.message };
     }
   };
 
@@ -225,6 +259,7 @@ export default function App() {
         <AdminLeadsModal
           leads={leads}
           onClose={() => setLeadsModalOpen(false)}
+          onResendLead={handleResendLead}
         />
       )}
 

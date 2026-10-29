@@ -7,6 +7,8 @@ export default function ContactSection({ theme, onAddLead }) {
     lastName: '',
     email: '',
     phone: '',
+    businessName: '',
+    city: '',
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
@@ -27,7 +29,8 @@ export default function ContactSection({ theme, onAddLead }) {
           name: `${formData.firstName} ${formData.lastName}`.trim(),
           email: formData.email,
           phone: formData.phone || 'N/A',
-          businessName: 'Website Visitor Inquiry',
+          businessName: formData.businessName.trim() || 'Website Visitor Store',
+          city: formData.city.trim() || 'Not specified',
           message: formData.message,
           status: 'NEW_INQUIRY'
         });
@@ -40,6 +43,8 @@ export default function ContactSection({ theme, onAddLead }) {
         lastName: '',
         email: '',
         phone: '',
+        businessName: '',
+        city: '',
         message: ''
       });
     }, 600);
@@ -196,6 +201,36 @@ export default function ContactSection({ theme, onAddLead }) {
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+91 98765 43210"
                       className="w-full bg-transparent border-b border-white/15 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8">
+                  {/* Business Name */}
+                  <div className="space-y-1.5 sm:space-y-2 group">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      Store / Business Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.businessName}
+                      onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                      placeholder="e.g. Sharma FMCG Wholesalers"
+                      className="w-full bg-transparent border-b border-white/15 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    />
+                  </div>
+
+                  {/* City */}
+                  <div className="space-y-1.5 sm:space-y-2 group">
+                    <label className="block text-xs font-semibold text-slate-300">
+                      City & State
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      placeholder="e.g. Patna, Bihar"
+                      className="w-full bg-transparent border-b border-white/15 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
                 </div>

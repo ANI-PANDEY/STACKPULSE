@@ -4,6 +4,9 @@ import confetti from 'canvas-confetti';
 
 export default function PaymentModal({ plan, onClose, onAddLead }) {
   const [paymentMethod, setPaymentMethod] = useState('UPI');
+  const [name, setName] = useState('');
+  const [storeName, setStoreName] = useState('');
+  const [city, setCity] = useState('');
   const [phone, setPhone] = useState('');
   const [gstin, setGstin] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -21,11 +24,13 @@ export default function PaymentModal({ plan, onClose, onAddLead }) {
       if (onAddLead) {
         await onAddLead({
           type: 'PAID_SUBSCRIPTION',
-          name: phone ? `Subscriber (+91 ${phone})` : 'New Subscriber',
+          name: name.trim() || (phone ? `Subscriber (+91 ${phone})` : 'New Subscriber'),
+          businessName: storeName.trim() || (gstin ? `GST: ${gstin}` : 'Subscribed Store'),
+          city: city.trim() || 'India',
           phone,
           plan: `${plan.name} (Annual Subscription)`,
           price: Math.round(priceAmount * 1.18),
-          businessName: gstin ? `GST: ${gstin}` : 'Subscribed Store'
+          notes: gstin ? `GSTIN: ${gstin}` : 'Direct Subscription'
         });
       }
     } finally {
@@ -114,16 +119,51 @@ export default function PaymentModal({ plan, onClose, onAddLead }) {
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-300">WhatsApp Phone Number for Receipt</label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="e.g. 9820198201"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 font-mono focus:outline-none focus:border-[#FF007F]"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="text-xs font-bold text-slate-300">Your Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Rajesh Sharma"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-[#FF007F]"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-300">Store / Company Name</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sharma FMCG Wholesalers"
+                    value={storeName}
+                    onChange={(e) => setStoreName(e.target.value)}
+                    className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-[#FF007F]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="text-xs font-bold text-slate-300">City & State</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Patna, Bihar"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 focus:outline-none focus:border-[#FF007F]"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-300">WhatsApp Phone <span className="text-red-400">*</span></label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. 9820198201"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-[#0C0C16] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white mt-1 font-mono focus:outline-none focus:border-[#FF007F]"
+                  />
+                </div>
               </div>
 
               <div>
