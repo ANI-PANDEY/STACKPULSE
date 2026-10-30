@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, CheckCircle2, Play, MapPin, Building2, Layers, MessageSquare, Laptop } from 'lucide-react';
+import { X, Calendar, Clock, CheckCircle2, Play, MapPin, Building2, Layers, MessageSquare, Laptop, AlertCircle, Mail, RotateCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { OWNER_WHATSAPP } from '../services/leadNotificationService';
+import { OWNER_WHATSAPP, TARGET_EMAIL } from '../services/leadNotificationService';
 
 export default function DemoBookingModal({ onClose, onAddLead }) {
   const getTomorrowDate = () => {
@@ -25,40 +25,61 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorFeedback, setErrorFeedback] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorFeedback(null);
+
+    const payload = {
+      type: 'DEMO_BOOKING',
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      businessName: formData.businessName.trim(),
+      city: formData.city.trim(),
+      businessType: formData.businessType,
+      counters: formData.counters,
+      currentSoftware: formData.currentSoftware,
+      preferredDate: formData.preferredDate,
+      preferredTime: formData.preferredTime,
+      notes: formData.notes.trim()
+    };
 
     try {
       if (onAddLead) {
-        await onAddLead({
-          type: 'DEMO_BOOKING',
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          businessName: formData.businessName.trim(),
-          city: formData.city.trim(),
-          businessType: formData.businessType,
-          counters: formData.counters,
-          currentSoftware: formData.currentSoftware,
-          preferredDate: formData.preferredDate,
-          preferredTime: formData.preferredTime,
-          notes: formData.notes.trim()
-        });
+        const res = await onAddLead(payload);
+        if (res && res.success === false) {
+          setErrorFeedback(res);
+        } else {
+          setIsSuccess(true);
+          confetti({ particleCount: 110, spread: 65, origin: { y: 0.6 } });
+        }
+      } else {
+        setIsSuccess(true);
       }
+    } catch (err) {
+      console.error('Demo booking error:', err);
+      setErrorFeedback({ error: err.message || 'Submission failed' });
     } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      confetti({ particleCount: 110, spread: 65, origin: { y: 0.6 } });
     }
   };
 
   const getFounderWhatsAppUrl = () => {
     const msg = encodeURIComponent(
-      `Hello Aniket! I just scheduled a 10-Min Live Demo for ${formData.businessName || 'my business'} (${formData.city || 'India'}) on ${formData.preferredDate} at ${formData.preferredTime}. My name is ${formData.name}.`
+      `Hello Aniket! I want to schedule a 10-Min Live Demo for ${formData.businessName || 'my business'} (${formData.city || 'India'}) on ${formData.preferredDate} at ${formData.preferredTime}. My name is ${formData.name} (Phone: ${formData.phone}).`
     );
     return `https://wa.me/91${OWNER_WHATSAPP}?text=${msg}`;
+  };
+
+  const getMailtoUrl = () => {
+    const subject = encodeURIComponent(`🔥 New 10-Min Live Demo Booking: ${formData.name} (${formData.businessName || 'Store'})`);
+    const body = encodeURIComponent(
+      `Request Type: 10-Min Live Demo Booking\nCustomer Name: ${formData.name}\nPhone: ${formData.phone}\nStore: ${formData.businessName}\nCity: ${formData.city}\nPreferred Slot: ${formData.preferredDate} at ${formData.preferredTime}\nNotes: ${formData.notes || 'None'}`
+    );
+    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -83,6 +104,45 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 <p className="text-[11px] sm:text-xs text-slate-400">Personalized 1-on-1 walkthrough tailored to your counter operations</p>
               </div>
             </div>
+
+            {/* Error Alert Banner if submission failed */}
+            {errorFeedback && (
+              <div className="mb-4 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-xs space-y-2">
+                <div className="flex items-center gap-2 font-bold text-rose-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Network Relay Notice: Email server temporarily unreachable</span>
+                </div>
+                <p className="text-[11px] text-slate-300">
+                  Your lead was saved locally. You can confirm your booking instantly via WhatsApp or Email below:
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <a
+                    href={getFounderWhatsAppUrl()}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-[#25D366] text-slate-950 font-black rounded-lg text-[11px] flex items-center gap-1.5"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
+                    <span>Send on WhatsApp</span>
+                  </a>
+                  <a
+                    href={getMailtoUrl()}
+                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg text-[11px] flex items-center gap-1.5"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Send Email</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setErrorFeedback(null)}
+                    className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-[11px] flex items-center gap-1"
+                  >
+                    <RotateCw className="w-3 h-3" />
+                    <span>Try Again</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Name & Phone */}
@@ -266,7 +326,7 @@ export default function DemoBookingModal({ onClose, onAddLead }) {
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Dispatching Details to Product Team...
+                    Sending Demo Request...
                   </span>
                 ) : (
                   <span>Confirm & Schedule Live Demo →</span>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ShieldCheck, Zap, Building2, MapPin, User, MessageSquare } from 'lucide-react';
+import { X, CheckCircle2, ShieldCheck, Zap, Building2, MapPin, User, MessageSquare, AlertCircle, Mail, RotateCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { OWNER_WHATSAPP } from '../services/leadNotificationService';
+import { OWNER_WHATSAPP, TARGET_EMAIL } from '../services/leadNotificationService';
 
 export default function FreeTrialModal({ onClose, onAddLead, onLaunchSandbox }) {
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ export default function FreeTrialModal({ onClose, onAddLead, onLaunchSandbox }) 
   const [randomSuffix] = useState(() => Math.floor(1000 + Math.random() * 9000).toString());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorFeedback, setErrorFeedback] = useState(null);
 
   const cleanStoreSlug = formData.storeName ? formData.storeName.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 12) : 'store';
   const tenantId = `tenant_${cleanStoreSlug}_${randomSuffix}`;
@@ -24,34 +25,54 @@ export default function FreeTrialModal({ onClose, onAddLead, onLaunchSandbox }) 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorFeedback(null);
+
+    const payload = {
+      type: 'FREE_TRIAL',
+      name: formData.name.trim(),
+      businessName: formData.storeName.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      city: formData.city.trim(),
+      businessType: formData.businessType,
+      counters: formData.counters,
+      notes: formData.notes.trim(),
+      accountId: tenantId
+    };
 
     try {
       if (onAddLead) {
-        await onAddLead({
-          type: 'FREE_TRIAL',
-          name: formData.name.trim(),
-          businessName: formData.storeName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          city: formData.city.trim(),
-          businessType: formData.businessType,
-          counters: formData.counters,
-          notes: formData.notes.trim(),
-          accountId: tenantId
-        });
+        const res = await onAddLead(payload);
+        if (res && res.success === false) {
+          setErrorFeedback(res);
+        } else {
+          setIsSuccess(true);
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        }
+      } else {
+        setIsSuccess(true);
       }
+    } catch (err) {
+      console.error('Free trial submission error:', err);
+      setErrorFeedback({ error: err.message || 'Submission failed' });
     } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
     }
   };
 
   const getFounderWhatsAppUrl = () => {
     const msg = encodeURIComponent(
-      `Hello Aniket! I have activated a 14-Day Free Trial for my store "${formData.storeName}" (${formData.city || 'India'}). My name is ${formData.name}. Could you assist with my onboarding?`
+      `Hello Aniket! I have requested a 14-Day Free Trial for my store "${formData.storeName}" (${formData.city || 'India'}). My name is ${formData.name} (Phone: ${formData.phone}). Could you assist with my onboarding?`
     );
     return `https://wa.me/91${OWNER_WHATSAPP}?text=${msg}`;
+  };
+
+  const getMailtoUrl = () => {
+    const subject = encodeURIComponent(`🔥 New 14-Day Free Trial (Plug & Play): ${formData.name} (${formData.storeName || 'Store'})`);
+    const body = encodeURIComponent(
+      `Request Type: 14-Day Free Trial\nCustomer Name: ${formData.name}\nStore: ${formData.storeName}\nCity: ${formData.city}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nAccount ID: ${tenantId}\nNotes: ${formData.notes || 'None'}`
+    );
+    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -76,6 +97,45 @@ export default function FreeTrialModal({ onClose, onAddLead, onLaunchSandbox }) 
                 <p className="text-[11px] sm:text-xs text-slate-400">Full Pro Access • No Credit Card • Zero Installation Required</p>
               </div>
             </div>
+
+            {/* Error Alert Banner if submission failed */}
+            {errorFeedback && (
+              <div className="mb-4 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-xs space-y-2">
+                <div className="flex items-center gap-2 font-bold text-rose-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Network Relay Notice: Email server temporarily unreachable</span>
+                </div>
+                <p className="text-[11px] text-slate-300">
+                  Your trial account details were saved locally. You can activate directly via WhatsApp or Email below:
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <a
+                    href={getFounderWhatsAppUrl()}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 bg-[#25D366] text-slate-950 font-black rounded-lg text-[11px] flex items-center gap-1.5"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
+                    <span>Send on WhatsApp</span>
+                  </a>
+                  <a
+                    href={getMailtoUrl()}
+                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg text-[11px] flex items-center gap-1.5"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Send Email</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setErrorFeedback(null)}
+                    className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-[11px] flex items-center gap-1"
+                  >
+                    <RotateCw className="w-3 h-3" />
+                    <span>Try Again</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Owner Name & WhatsApp */}
@@ -215,7 +275,7 @@ export default function FreeTrialModal({ onClose, onAddLead, onLaunchSandbox }) 
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Provisioning Account & Dispatching Lead...
+                    Provisioning Account & Sending Alert...
                   </span>
                 ) : (
                   <span>Activate 14-Day Free Trial Now →</span>

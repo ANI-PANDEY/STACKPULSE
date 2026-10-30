@@ -47,6 +47,77 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Handle /api/send-lead endpoint
+  if (req.url.startsWith('/api/send-lead')) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(200);
+      res.end();
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const TARGET_EMAIL = 'aniketraj1707@gmail.com';
+
+          // Attempt FormSubmit
+          try {
+            const fsRes = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (fsRes.ok) {
+              const data = await fsRes.json();
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: true, channel: 'FormSubmit', data }));
+              return;
+            }
+          } catch (e) {
+            console.warn('[Server] FormSubmit error:', e.message);
+          }
+
+          // Attempt ShipMyForm fallback
+          try {
+            const smfRes = await fetch(`https://shipmyform.com/to/${TARGET_EMAIL}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Origin': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app',
+                'Referer': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app/'
+              },
+              body: JSON.stringify(payload)
+            });
+            if (smfRes.ok) {
+              const data = await smfRes.json();
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: true, channel: 'ShipMyForm', data }));
+              return;
+            }
+          } catch (e) {
+            console.warn('[Server] ShipMyForm error:', e.message);
+          }
+
+          res.writeHead(503, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Upstream mail relays temporarily offline' }));
+        } catch (parseErr) {
+          console.warn('[Server] Payload parse error:', parseErr.message);
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Invalid JSON payload' }));
+        }
+      });
+      return;
+    }
+  }
+
   // Parse requested URL path (strip query params / hashes)
   const cleanUrl = req.url ? req.url.split('?')[0].split('#')[0] : '/';
   let safePath = path.normalize(decodeURIComponent(cleanUrl)).replace(/^(\.\.[/\\])+/, '');

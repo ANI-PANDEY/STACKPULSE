@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowUpRight, CheckCircle2, Phone, MapPin, Send, Zap } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Phone, MapPin, Send, Zap, AlertCircle, MessageSquare, Mail, RotateCw } from 'lucide-react';
+import { OWNER_WHATSAPP, TARGET_EMAIL } from '../services/leadNotificationService';
 
 export default function ContactSection({ theme, onAddLead }) {
   const [formData, setFormData] = useState({
@@ -13,41 +14,71 @@ export default function ContactSection({ theme, onAddLead }) {
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorFeedback, setErrorFeedback] = useState(null);
 
   const isDark = theme === 'dark';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.firstName || !formData.email || !formData.message) return;
 
     setLoading(true);
+    setErrorFeedback(null);
 
-    setTimeout(() => {
+    const payload = {
+      type: 'CONTACT_INQUIRY',
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim() || 'N/A',
+      businessName: formData.businessName.trim() || 'Website Visitor Store',
+      city: formData.city.trim() || 'Not specified',
+      message: formData.message.trim(),
+      status: 'NEW_INQUIRY'
+    };
+
+    try {
       if (onAddLead) {
-        onAddLead({
-          type: 'CONTACT_INQUIRY',
-          name: `${formData.firstName} ${formData.lastName}`.trim(),
-          email: formData.email,
-          phone: formData.phone || 'N/A',
-          businessName: formData.businessName.trim() || 'Website Visitor Store',
-          city: formData.city.trim() || 'Not specified',
-          message: formData.message,
-          status: 'NEW_INQUIRY'
-        });
+        const res = await onAddLead(payload);
+        if (res && res.success === false) {
+          setErrorFeedback(res);
+        } else {
+          setSubmitted(true);
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            businessName: '',
+            city: '',
+            message: ''
+          });
+        }
+      } else {
+        setSubmitted(true);
       }
-
+    } catch (err) {
+      console.error('Contact inquiry error:', err);
+      setErrorFeedback({ error: err.message || 'Submission failed' });
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        businessName: '',
-        city: '',
-        message: ''
-      });
-    }, 600);
+    }
+  };
+
+  const getFounderWhatsAppUrl = () => {
+    const fullName = `${formData.firstName} ${formData.lastName}`.trim() || 'Website Visitor';
+    const msg = encodeURIComponent(
+      `Hello Aniket! I sent an inquiry on StackPulse for ${formData.businessName || 'my business'} (${formData.city || 'India'}). My name is ${fullName} (Phone: ${formData.phone || 'N/A'}). Message: ${formData.message}`
+    );
+    return `https://wa.me/91${OWNER_WHATSAPP}?text=${msg}`;
+  };
+
+  const getMailtoUrl = () => {
+    const fullName = `${formData.firstName} ${formData.lastName}`.trim() || 'Visitor';
+    const subject = encodeURIComponent(`🔥 New Contact Form Inquiry: ${fullName} (${formData.businessName || 'Store'})`);
+    const body = encodeURIComponent(
+      `Name: ${fullName}\nStore: ${formData.businessName}\nCity: ${formData.city}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nMessage: ${formData.message}`
+    );
+    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -143,6 +174,44 @@ export default function ContactSection({ theme, onAddLead }) {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+                {errorFeedback && (
+                  <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-xs space-y-2">
+                    <div className="flex items-center gap-2 font-bold text-rose-400">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>Notification Relay Notice: Direct email server temporarily unreachable</span>
+                    </div>
+                    <p className="text-[11px] text-slate-300">
+                      Your message has been saved in our desk. You can reach out directly via WhatsApp or Email below:
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <a
+                        href={getFounderWhatsAppUrl()}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-3.5 py-1.5 bg-[#25D366] text-slate-950 font-black rounded-lg text-xs flex items-center gap-1.5"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
+                        <span>Send via WhatsApp</span>
+                      </a>
+                      <a
+                        href={getMailtoUrl()}
+                        className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg text-xs flex items-center gap-1.5"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>Send via Email</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setErrorFeedback(null)}
+                        className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-xs flex items-center gap-1"
+                      >
+                        <RotateCw className="w-3 h-3" />
+                        <span>Try Again</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-8">
                   {/* First Name */}
                   <div className="space-y-1.5 sm:space-y-2 group">
@@ -258,7 +327,10 @@ export default function ContactSection({ theme, onAddLead }) {
                     className="w-full sm:w-auto px-10 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm font-black text-white bg-gradient-to-r from-red-600 via-rose-600 to-red-500 hover:from-red-500 hover:to-rose-600 active:scale-95 transition-all shadow-xl shadow-red-500/30 hover:shadow-red-500/50 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {loading ? (
-                      <span>Sending...</span>
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Sending Inquiry...</span>
+                      </span>
                     ) : (
                       <>
                         <span>Submit Inquiry</span>

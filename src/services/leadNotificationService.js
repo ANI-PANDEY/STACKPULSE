@@ -1,7 +1,8 @@
 /**
  * StackPulse Multi-Channel Lead Notification Service
  * Dispatches comprehensive lead alerts to aniketraj1707@gmail.com
- * Supports Web3Forms, FormSubmit fallback, Google Apps Script / Webhooks,
+ * Supports FormSubmit (formsubmit.co), Backend API (/api/send-lead),
+ * ShipMyForm instant relay, Web3Forms, Google Apps Script / Webhooks,
  * Direct WhatsApp notification generator, and pre-formatted mailto alerts.
  */
 
@@ -83,27 +84,27 @@ export function formatLeadSummaryText(lead) {
   return [
     `🔥 NEW STACKPULSE LEAD RECEIVED`,
     `==================================`,
-    `📋 REQUEST TYPE: ${requestType}`,
-    `👤 CONTACT PERSON: ${customerName}`,
-    `📱 MOBILE / WHATSAPP: ${lead.phone || 'Not provided'}`,
-    `📧 EMAIL ADDRESS: ${lead.email || 'Not provided'}`,
-    `🏪 BUSINESS / STORE: ${lead.businessName || 'Not provided'}`,
-    `📍 CITY & LOCATION: ${lead.city || 'Not provided'}`,
-    `🏢 BUSINESS CATEGORY: ${lead.businessType || 'Retail / Wholesale'}`,
-    lead.counters ? `🔢 BILLING COUNTERS: ${lead.counters}` : null,
-    lead.currentSoftware ? `💻 CURRENT SOFTWARE: ${lead.currentSoftware}` : null,
-    lead.preferredDate ? `📅 PREFERRED DATE: ${lead.preferredDate}` : null,
-    lead.preferredTime ? `⏰ PREFERRED TIME: ${lead.preferredTime}` : null,
-    lead.notes || lead.message ? `💬 NOTES / REQUIREMENTS: ${lead.notes || lead.message}` : null,
-    lead.plan ? `💳 SELECTED PLAN: ${lead.plan}` : null,
-    lead.price ? `💰 TOTAL VALUE: ₹${lead.price}` : null,
-    lead.accountId ? `🆔 MULTI-TENANT ID: ${lead.accountId}` : null,
+    `📋 Request Type: ${requestType}`,
+    `👤 Customer Name: ${customerName}`,
+    `📱 Phone / WhatsApp: ${lead.phone || 'Not provided'}`,
+    `📧 Customer Email: ${lead.email || 'Not provided'}`,
+    `🏪 Business / Store Name: ${lead.businessName || 'Not provided'}`,
+    `📍 City & State: ${lead.city || 'Not provided'}`,
+    `🏢 Business Category: ${lead.businessType || 'Wholesale / Retail Store'}`,
+    lead.counters ? `🔢 Billing Counters: ${lead.counters}` : null,
+    lead.currentSoftware ? `💻 Current System: ${lead.currentSoftware}` : null,
+    lead.preferredDate ? `📅 Preferred Demo Date: ${lead.preferredDate}` : null,
+    lead.preferredTime ? `⏰ Preferred Demo Time: ${lead.preferredTime}` : null,
+    lead.notes || lead.message ? `💬 Requirements: ${lead.notes || lead.message}` : null,
+    lead.plan ? `💳 Selected Plan: ${lead.plan}` : null,
+    lead.price ? `💰 Total Value: ₹${lead.price}` : null,
+    lead.accountId ? `🆔 Account ID: ${lead.accountId}` : null,
     `----------------------------------`,
-    cleanPhone ? `👉 CHAT WITH CUSTOMER: https://wa.me/91${cleanPhone}` : null,
-    cleanPhone ? `👉 CALL CUSTOMER: tel:+91${cleanPhone}` : null,
-    lead.email ? `👉 EMAIL CUSTOMER: mailto:${lead.email}` : null,
-    `🕒 RECEIVED AT: ${now} (IST)`,
-    `🌐 SOURCE: ${typeof window !== 'undefined' ? window.location.origin : 'https://stackpulse-phi.vercel.app'}`
+    cleanPhone ? `👉 Click to WhatsApp: https://wa.me/91${cleanPhone}` : null,
+    cleanPhone ? `👉 Click to Call: tel:+91${cleanPhone}` : null,
+    lead.email ? `👉 Email Customer: mailto:${lead.email}` : null,
+    `🕒 Received At: ${now} (IST)`,
+    `🌐 Source Website URL: ${typeof window !== 'undefined' ? window.location.origin : 'https://stackpulse-phi.vercel.app'}`
   ].filter(Boolean).join('\n');
 }
 
@@ -116,7 +117,7 @@ export function buildOwnerWhatsAppLink(lead) {
 }
 
 /**
- * Builds a direct customer greeting WhatsApp link
+ * Builds a direct customer greeting WhatsApp link with prefilled message
  */
 export function buildCustomerWhatsAppLink(lead) {
   const cleanPhone = lead.phone ? String(lead.phone).replace(/\D/g, '') : '';
@@ -124,7 +125,7 @@ export function buildCustomerWhatsAppLink(lead) {
   const customerName = lead.name || 'Sir';
   const requestType = getFriendlyLeadType(lead.type);
   const text = encodeURIComponent(
-    `Hello ${customerName}! Thank you for your interest in STACKPULSE. We received your request for ${requestType} for "${lead.businessName || 'your store'}". When would be a convenient time to connect?`
+    `Hello ${customerName}! Thank you for your interest in STACKPULSE. We received your ${requestType} request for ${lead.businessName || 'your business'}. When would be a good time to connect?`
   );
   return `https://wa.me/91${cleanPhone}?text=${text}`;
 }
@@ -135,7 +136,7 @@ export function buildCustomerWhatsAppLink(lead) {
 export function buildMailtoFallback(lead) {
   const customerName = lead.name || 'Customer';
   const requestType = getFriendlyLeadType(lead.type);
-  const subject = encodeURIComponent(`🔥 [STACKPULSE] ${requestType}: ${customerName} - ${lead.businessName || 'Store'}`);
+  const subject = encodeURIComponent(`🔥 New ${requestType}: ${customerName} (${lead.businessName || 'Store'})`);
   const body = encodeURIComponent(formatLeadSummaryText(lead));
   return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
 }
@@ -148,45 +149,121 @@ export async function sendLeadNotification(lead) {
   const requestType = getFriendlyLeadType(lead.type);
   const cleanPhone = lead.phone ? String(lead.phone).replace(/\D/g, '') : '';
   const now = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  const sourceUrl = typeof window !== 'undefined' ? window.location.origin : 'https://stackpulse-phi.vercel.app';
 
-  // Generate actionable one-click links
-  const waCustomerLink = cleanPhone ? `https://wa.me/91${cleanPhone}` : 'N/A';
+  // Interactive WhatsApp greeting link for Aniket
+  const waGreeting = encodeURIComponent(
+    `Hello ${customerName}! Thank you for your interest in STACKPULSE. We received your ${requestType} request for ${lead.businessName || 'your business'}. When would be a good time to connect?`
+  );
+  const waLink = cleanPhone ? `https://wa.me/91${cleanPhone}?text=${waGreeting}` : 'N/A';
   const telLink = cleanPhone ? `tel:+91${cleanPhone}` : 'N/A';
 
-  // Structured payload for email providers
+  // EXACT payload structure as requested
   const payload = {
-    _subject: `🔥 [STACKPULSE] ${requestType}: ${customerName} (${lead.businessName || 'Store'}) - ${lead.city || 'India'}`,
+    _subject: `🔥 New ${requestType}: ${customerName} (${lead.businessName || 'Store'})`,
     _template: 'table',
     _captcha: 'false',
     ...(lead.email ? { _replyto: lead.email, email: lead.email } : {}),
 
-    // Essential fields for Aniket to deliver the service/demo smoothly
-    '📋 Request Type': requestType,
-    '👤 Contact Person': customerName,
-    '📱 Mobile / WhatsApp': lead.phone || 'Not provided',
-    '💬 1-Click WhatsApp Customer': waCustomerLink,
-    '📞 1-Click Call Customer': telLink,
-    '📧 Email Address': lead.email || 'Not provided',
-    '🏪 Store / Business Name': lead.businessName || 'Not provided',
-    '📍 City & State': lead.city || 'Not specified',
-    '🏢 Business Category': lead.businessType || 'Retail / Wholesale Mart',
-    '🔢 Billing Counters / Volume': lead.counters || '1-2 Counters',
-    '💻 Current Billing Method': lead.currentSoftware || 'Manual / Excel',
-    ...(lead.preferredDate ? { '📅 Preferred Demo Date': lead.preferredDate } : {}),
-    ...(lead.preferredTime ? { '⏰ Preferred Demo Time': lead.preferredTime } : {}),
-    ...(lead.notes || lead.message ? { '💬 Requirements / Notes': lead.notes || lead.message } : {}),
-    ...(lead.plan ? { '💳 Selected Plan': lead.plan } : {}),
-    ...(lead.price ? { '💰 Value': `₹${lead.price}` } : {}),
-    ...(lead.accountId ? { '🆔 Multi-Tenant ID': lead.accountId } : {}),
-    '🕒 Received At': `${now} (IST)`,
-    '🌐 Source Website': typeof window !== 'undefined' ? window.location.origin : 'https://stackpulse-phi.vercel.app'
+    // Required fields in exact order
+    'Request Type': requestType,
+    'Customer Name': customerName,
+    'Phone / WhatsApp': lead.phone || 'Not provided',
+    'Click to WhatsApp': waLink,
+    'Click to Call': telLink,
+    'Customer Email': lead.email || 'Not provided',
+    'Business / Store Name': lead.businessName || 'Not provided',
+    'Business Category': lead.businessType || 'Wholesale / Retail Store',
+    'City & State': lead.city || 'Not specified',
+    ...(lead.counters ? { 'Billing Counters': lead.counters } : {}),
+    ...(lead.currentSoftware ? { 'Current System': lead.currentSoftware } : {}),
+    ...(lead.preferredDate ? { 'Preferred Demo Date': lead.preferredDate } : {}),
+    ...(lead.preferredTime ? { 'Preferred Demo Time': lead.preferredTime } : {}),
+    ...(lead.notes || lead.message ? { 'Requirements / Notes': lead.notes || lead.message } : {}),
+    ...(lead.plan ? { 'Selected Plan': lead.plan } : {}),
+    ...(lead.price ? { 'Total Value': `₹${lead.price}` } : {}),
+    ...(lead.accountId ? { 'Account ID': lead.accountId } : {}),
+    'Source Website URL': sourceUrl,
+    'Received At': `${now} (IST)`
   };
 
-  const results = [];
+  // ==========================================================
+  // CHANNEL 1: Internal API Route (/api/send-lead)
+  // ==========================================================
+  try {
+    const apiRes = await fetch('/api/send-lead', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
 
-  // ==========================================
-  // CHANNEL 1: Web3Forms (if access key configured)
-  // ==========================================
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      console.log('[LeadNotification] Dispatched via /api/send-lead:', data);
+      return { success: true, channel: data.channel || 'Internal API', data };
+    }
+  } catch (apiErr) {
+    console.warn('[LeadNotification] /api/send-lead failed or skipped:', apiErr.message);
+  }
+
+  // ==========================================================
+  // CHANNEL 2: Direct FormSubmit AJAX (https://formsubmit.co/ajax/...)
+  // ==========================================================
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const fsRes = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (fsRes.ok) {
+      const fsData = await fsRes.json();
+      console.log('[LeadNotification] Dispatched via FormSubmit:', fsData);
+      return { success: true, channel: 'FormSubmit', data: fsData };
+    }
+  } catch (fsErr) {
+    console.warn('[LeadNotification] FormSubmit relay notice (521 or network):', fsErr.message);
+  }
+
+  // ==========================================================
+  // CHANNEL 3: ShipMyForm Instant Relay (https://shipmyform.com/to/...)
+  // ==========================================================
+  try {
+    const smfRes = await fetch(`https://shipmyform.com/to/${TARGET_EMAIL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (smfRes.ok) {
+      const smfData = await smfRes.json();
+      if (smfData.ok || smfData.success) {
+        console.log('[LeadNotification] Dispatched via ShipMyForm:', smfData);
+        return { success: true, channel: 'ShipMyForm', data: smfData };
+      }
+    }
+  } catch (smfErr) {
+    console.warn('[LeadNotification] ShipMyForm relay notice:', smfErr.message);
+  }
+
+  // ==========================================================
+  // CHANNEL 4: Web3Forms (if key configured)
+  // ==========================================================
   const web3Key = getStoredWeb3FormsKey();
   if (web3Key) {
     try {
@@ -194,7 +271,6 @@ export async function sendLeadNotification(lead) {
         access_key: web3Key,
         subject: payload._subject,
         from_name: 'StackPulse Leads Engine',
-        to_email: TARGET_EMAIL,
         name: customerName,
         email: lead.email || 'leads@stackpulse.com',
         phone: lead.phone || '',
@@ -214,22 +290,16 @@ export async function sendLeadNotification(lead) {
       if (w3Res.ok) {
         const w3Data = await w3Res.json();
         console.log('[LeadNotification] Dispatched via Web3Forms:', w3Data);
-        results.push({ channel: 'Web3Forms', success: true, data: w3Data });
         return { success: true, channel: 'Web3Forms', data: w3Data };
-      } else {
-        const errText = await w3Res.text();
-        console.warn('[LeadNotification] Web3Forms non-200:', errText);
-        results.push({ channel: 'Web3Forms', success: false, error: errText });
       }
-    } catch (err) {
-      console.warn('[LeadNotification] Web3Forms failed:', err);
-      results.push({ channel: 'Web3Forms', success: false, error: err.message });
+    } catch (w3Err) {
+      console.warn('[LeadNotification] Web3Forms notice:', w3Err.message);
     }
   }
 
-  // ==========================================
-  // CHANNEL 2: Custom Webhook / Google Apps Script
-  // ==========================================
+  // ==========================================================
+  // CHANNEL 5: Custom Webhook (if configured)
+  // ==========================================================
   const webhookUrl = getStoredWebhookUrl();
   if (webhookUrl) {
     try {
@@ -244,55 +314,20 @@ export async function sendLeadNotification(lead) {
         })
       });
       if (hookRes.ok) {
-        console.log('[LeadNotification] Dispatched via Custom Webhook');
-        results.push({ channel: 'Webhook', success: true });
         return { success: true, channel: 'Webhook' };
       }
-    } catch (err) {
-      console.warn('[LeadNotification] Webhook failed:', err);
-      results.push({ channel: 'Webhook', success: false, error: err.message });
+    } catch (hookErr) {
+      console.warn('[LeadNotification] Webhook notice:', hookErr.message);
     }
   }
 
-  // ==========================================
-  // CHANNEL 3: FormSubmit (Fallback)
-  // ==========================================
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-    const fsRes = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (fsRes.ok) {
-      const fsData = await fsRes.json();
-      console.log('[LeadNotification] Dispatched via FormSubmit:', fsData);
-      return { success: true, channel: 'FormSubmit', data: fsData };
-    } else {
-      const text = await fsRes.text();
-      console.warn('[LeadNotification] FormSubmit returned error status:', fsRes.status, text);
-      results.push({ channel: 'FormSubmit', success: false, status: fsRes.status, error: text });
-    }
-  } catch (err) {
-    console.warn('[LeadNotification] FormSubmit network or 521 error:', err);
-    results.push({ channel: 'FormSubmit', success: false, error: err.message });
-  }
-
-  // If online providers failed, return rich fallback helpers so UI and Admin can assist
+  // Fallback metadata so UI can present immediate alternatives
   return {
     success: false,
-    results,
+    error: 'Notification servers temporarily busy or offline',
     fallback: {
       ownerWhatsAppLink: buildOwnerWhatsAppLink(lead),
+      customerWhatsAppLink: buildCustomerWhatsAppLink(lead),
       mailtoLink: buildMailtoFallback(lead),
       summaryText: formatLeadSummaryText(lead)
     }
