@@ -67,12 +67,22 @@ const server = http.createServer((req, res) => {
           const payload = JSON.parse(body || '{}');
           const TARGET_EMAIL = 'aniketraj1707@gmail.com';
 
+          const getTimeoutSignal = (ms) => {
+            if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+              return AbortSignal.timeout(ms);
+            }
+            const c = new AbortController();
+            setTimeout(() => c.abort(), ms);
+            return c.signal;
+          };
+
           // Attempt FormSubmit
           try {
             const fsRes = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-              body: JSON.stringify(payload)
+              body: JSON.stringify(payload),
+              signal: getTimeoutSignal(3500)
             });
             if (fsRes.ok) {
               const data = await fsRes.json();
@@ -94,7 +104,8 @@ const server = http.createServer((req, res) => {
                 'Origin': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app',
                 'Referer': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app/'
               },
-              body: JSON.stringify(payload)
+              body: JSON.stringify(payload),
+              signal: getTimeoutSignal(4000)
             });
             if (smfRes.ok) {
               const data = await smfRes.json();

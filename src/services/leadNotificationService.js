@@ -191,14 +191,20 @@ export async function sendLeadNotification(lead) {
   // CHANNEL 1: Internal API Route (/api/send-lead)
   // ==========================================================
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     const apiRes = await fetch('/api/send-lead', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (apiRes.ok) {
       const data = await apiRes.json();

@@ -26,11 +26,28 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = req.body;
-    if (!payload) {
-      res.status(400).json({ success: false, error: 'Missing lead payload' });
+    let payload = req.body;
+    if (typeof payload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch (pErr) {
+        console.warn('[Serverless API] JSON parse fallback error:', pErr.message);
+      }
+    }
+
+    if (!payload || typeof payload !== 'object') {
+      res.status(400).json({ success: false, error: 'Missing or invalid lead payload' });
       return;
     }
+
+    const getTimeoutSignal = (ms) => {
+      if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+        return AbortSignal.timeout(ms);
+      }
+      const c = new AbortController();
+      setTimeout(() => c.abort(), ms);
+      return c.signal;
+    };
 
     // Attempt Provider 1: FormSubmit AJAX
     try {
@@ -40,7 +57,8 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: getTimeoutSignal(3500)
       });
       if (fsRes.ok) {
         const data = await fsRes.json();
@@ -61,7 +79,8 @@ export default async function handler(req, res) {
           'Origin': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app',
           'Referer': payload['Source Website URL'] || 'https://stackpulse-phi.vercel.app/'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: getTimeoutSignal(4000)
       });
       if (smfRes.ok) {
         const data = await smfRes.json();
