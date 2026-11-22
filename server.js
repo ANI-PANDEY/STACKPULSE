@@ -65,7 +65,7 @@ const server = http.createServer((req, res) => {
       req.on('end', async () => {
         try {
           const payload = JSON.parse(body || '{}');
-          const TARGET_EMAIL = 'aniketraj1707@gmail.com';
+          const TARGET_EMAIL = 'stackkpulse@gmail.com';
 
           const getTimeoutSignal = (ms) => {
             if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {

@@ -3,7 +3,7 @@
  * Relays lead notifications securely with CORS headers and multi-provider failover.
  */
 
-const TARGET_EMAIL = 'aniketraj1707@gmail.com';
+const TARGET_EMAIL = 'stackkpulse@gmail.com';
 
 export default async function handler(req, res) {
   // Set CORS headers

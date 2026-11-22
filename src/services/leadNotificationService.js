@@ -1,12 +1,12 @@
 /**
  * StackPulse Multi-Channel Lead Notification Service
- * Dispatches comprehensive lead alerts to aniketraj1707@gmail.com
+ * Dispatches comprehensive lead alerts to stackkpulse@gmail.com
  * Supports FormSubmit (formsubmit.co), Backend API (/api/send-lead),
  * ShipMyForm instant relay, Web3Forms, Google Apps Script / Webhooks,
  * Direct WhatsApp notification generator, and pre-formatted mailto alerts.
  */
 
-export const TARGET_EMAIL = 'aniketraj1707@gmail.com';
+export const TARGET_EMAIL = 'stackkpulse@gmail.com';
 export const OWNER_WHATSAPP = '8877002297'; // Aniket's direct WhatsApp number
 
 /**

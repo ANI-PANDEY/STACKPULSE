@@ -100,7 +100,9 @@ export default function Footer({ theme, onScrollToSection, onOpenDemoModal }) {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-red-400 shrink-0" />
-                <span className="break-all">support@stackpulse.com</span>
+                <a href="mailto:stackkpulse@gmail.com" className="break-all hover:text-emerald-400 transition-colors">
+                  stackkpulse@gmail.com
+                </a>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-red-400 shrink-0" />

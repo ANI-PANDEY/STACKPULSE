@@ -111,7 +111,7 @@ export default function App() {
     };
     setLeads(prev => [newLead, ...prev]);
 
-    // Send instant email notification to aniketraj1707@gmail.com
+    // Send instant email notification to stackkpulse@gmail.com
     try {
       const res = await sendLeadNotification(newLead);
       if (res && res.success) {

@@ -109,10 +109,10 @@ export default function ContactSection({ theme, onAddLead }) {
               </h3>
 
               <a 
-                href="mailto:support@stackpulse.com"
+                href="mailto:stackkpulse@gmail.com"
                 className="inline-flex items-center gap-1.5 text-base sm:text-xl font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-4 decoration-emerald-500/50 hover:decoration-emerald-400 transition-all group break-all sm:break-normal"
               >
-                <span>support@stackpulse.com</span>
+                <span>stackkpulse@gmail.com</span>
                 <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-red-500 shrink-0" />
               </a>
 

@@ -303,7 +303,7 @@ export default function AdminLeadsModal({ leads = [], onClose, onResendLead }) {
                   rel="noreferrer"
                   className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold underline"
                 >
-                  <span>👉 Get Free Web3Forms Key (Type aniketraj1707@gmail.com on web3forms.com)</span>
+                  <span>👉 Get Free Web3Forms Key (Type stackkpulse@gmail.com on web3forms.com)</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
 
